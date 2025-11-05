@@ -33,18 +33,47 @@ export async function searchFlights(searchParams) {
     tripType: tripType || 'oneWay',
   });
   
+  const url = `${API_BASE_URL}/flights?${queryParams}`;
+  console.log('🔍 Searching flights at:', url.replace(API_BASE_URL, 'API_BASE_URL'));
+  console.log('🔍 API Base URL:', API_BASE_URL);
+  
   try {
-    const res = await fetch(`${API_BASE_URL}/flights?${queryParams}`);
+    const res = await fetch(url);
     
     if (!res.ok) {
-      const errorData = await res.json().catch(() => ({ error: `HTTP ${res.status}: ${res.statusText}` }));
-      throw new Error(errorData.error || `Failed to fetch flights: ${res.statusText}`);
+      // Try to get error details
+      let errorMessage = `HTTP ${res.status}: ${res.statusText}`;
+      try {
+        const errorData = await res.json();
+        errorMessage = errorData.error || errorMessage;
+      } catch (e) {
+        // If response is not JSON, use status text
+        const text = await res.text().catch(() => '');
+        if (text) errorMessage = text;
+      }
+      
+      // Provide more helpful error messages
+      if (res.status === 404) {
+        errorMessage = `API endpoint not found. Please check your REACT_APP_API_URL environment variable. Current: ${API_BASE_URL}`;
+      } else if (res.status === 0 || res.status === 'TypeError') {
+        errorMessage = `Cannot connect to backend API. Please verify REACT_APP_API_URL is set correctly. Current: ${API_BASE_URL}`;
+      }
+      
+      throw new Error(errorMessage);
     }
     
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error('Flight search API error:', error);
+    console.error('❌ Flight search API error:', error);
+    console.error('   API URL:', API_BASE_URL);
+    console.error('   Full URL:', url);
+    
+    // Provide more helpful error for network errors
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      throw new Error(`Cannot connect to backend API at ${API_BASE_URL}. Please check your REACT_APP_API_URL environment variable.`);
+    }
+    
     throw error;
   }
 }

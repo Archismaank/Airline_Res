@@ -606,7 +606,17 @@ const App = () => {
       }
     } catch (error) {
       console.error('Search error:', error);
-      const errorMessage = error.message || 'Failed to fetch flights. Please check if the backend server is running on port 5000.';
+      let errorMessage = error.message || 'Failed to fetch flights.';
+      
+      // Provide more helpful error messages
+      if (error.message && error.message.includes('404')) {
+        errorMessage = 'Backend API endpoint not found. Please check your REACT_APP_API_URL environment variable in Render.';
+      } else if (error.message && error.message.includes('Cannot connect')) {
+        errorMessage = 'Cannot connect to backend API. Please verify your backend is deployed and REACT_APP_API_URL is set correctly.';
+      } else if (error.message && error.message.includes('localhost')) {
+        errorMessage = 'API is pointing to localhost. Please set REACT_APP_API_URL to your deployed backend URL in Render environment variables.';
+      }
+      
       showModal('danger', 'Error', errorMessage);
       setSearchResults([]);
     } finally {
