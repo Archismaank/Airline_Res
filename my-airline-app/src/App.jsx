@@ -626,6 +626,16 @@ const App = () => {
 
 
   const startBookingFlow = (flight) => {
+    // Check if user is logged in
+    if (!user || !user.id) {
+      // Store the selected flight so user can continue booking after login
+      setSelectedFlight({ ...flight, travelType });
+      // Redirect to auth page
+      setPage('auth');
+      showModal('warning', 'Login Required', 'Please login or register to book a flight.');
+      return;
+    }
+
     if (totalPassengers < 1) {
       showModal('warning', 'Add Passengers', 'Please add at least one passenger before booking.');
       return;
@@ -930,11 +940,22 @@ const App = () => {
           localStorage.setItem('user', JSON.stringify(response.user));
           setUser(response.user);
         }
-        showModal('success', 'Welcome Back', 'Login successful. Redirecting...');
-        setTimeout(() => {
-          setAuthMode('none');
-          setPage('home');
-        }, 1000);
+        
+        // Check if a flight was selected before login (redirect to booking)
+        if (selectedFlight && selectedFlight.flightNumber) {
+          showModal('success', 'Welcome Back', 'Login successful. Redirecting to booking...');
+          setTimeout(() => {
+            setAuthMode('none');
+            // Start booking flow with the selected flight
+            startBookingFlow(selectedFlight);
+          }, 1000);
+        } else {
+          showModal('success', 'Welcome Back', 'Login successful. Redirecting...');
+          setTimeout(() => {
+            setAuthMode('none');
+            setPage('home');
+          }, 1000);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -1267,13 +1288,27 @@ const App = () => {
               <div className="flex flex-col items-end justify-between gap-3">
                 <p className="text-xl font-bold text-blue-600">{formatPrice(flight.price, flight.travelType)}</p>
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => startBookingFlow(flight)}
-                    className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
-                  >
-                    Book Now
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
+                  {user && user.id ? (
+                    <button
+                      onClick={() => startBookingFlow(flight)}
+                      className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
+                    >
+                      Book Now
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setSelectedFlight({ ...flight, travelType });
+                        setPage('auth');
+                        showModal('info', 'Login Required', 'Please login or register to book a flight.');
+                      }}
+                      className="inline-flex items-center gap-2 rounded-full bg-slate-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-slate-200 transition hover:bg-slate-700"
+                    >
+                      Login to Book
+                      <LogIn className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
