@@ -53,7 +53,7 @@ app.listen(PORT, async () => {
     console.log('✅ Connected to SQLite database.');
 
     // Sync database schema safely (does not delete existing data)
-    await sequelize.sync({ alter: true });
+    await sequelize.sync({ alter: process.env.NODE_ENV !== 'production' });
     console.log('✅ Database schema synchronized.');
 
     // Start background scheduler (runs once backend is ready)
