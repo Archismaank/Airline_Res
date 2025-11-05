@@ -1505,9 +1505,9 @@ const App = () => {
             <div>
               <p className="text-xs uppercase tracking-wide text-slate-400">Fare</p>
               <p className="text-lg font-semibold text-blue-600">{formatPrice(calculateTotalPrice, selectedFlight?.travelType || 'domestic')}</p>
-              {calculateTotalPrice > (selectedFlight?.price || 0) && (
+              {(searchForm.adults + searchForm.children) > 1 && (
                 <p className="text-xs text-slate-500 mt-1">
-                  Base: {formatPrice(selectedFlight?.price || 0, selectedFlight?.travelType || 'domestic')}
+                  Base: {formatPrice((selectedFlight?.price || 0) * (searchForm.adults + searchForm.children), selectedFlight?.travelType || 'domestic')} ({searchForm.adults + searchForm.children} {searchForm.adults + searchForm.children === 1 ? 'passenger' : 'passengers'})
                 </p>
               )}
             </div>
