@@ -6,7 +6,14 @@ const sequelize = require('./models'); // this will be created soon
 const app = express();
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({
+  origin: [
+    'http://localhost:3000', // local frontend (development)
+    'https://airline-reservation-frontend.onrender.com' // your deployed Render frontend
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
