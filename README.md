@@ -7,7 +7,7 @@ This platform allows users to search for flights, register/login, book tickets, 
 
 ## 🚀 Live Demo
 
-- **Frontend (React):** [https://airline-reservation-frontend.onrender.com](https://airline-reservation-frontend.onrender.com)
+- **Frontend (React):** [https://airline-reservation-frontend.onrender.com](https://airline-reservation-system-tmm6.onrender.com)
 - **Backend (Express API):** [https://airline-backend-ruzi.onrender.com](https://airline-backend-ruzi.onrender.com)
 
 ---
