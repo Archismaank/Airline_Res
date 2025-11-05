@@ -733,16 +733,28 @@ const App = () => {
       const pnr = generatePNR();
       
       // Calculate total price including add-ons and seats
-      const addonsPrice = selectedAddons.reduce((sum, addonId) => {
+      // Get number of paying passengers (adults + children, infants are free)
+      const payingPassengers = searchForm.adults + searchForm.children;
+      
+      // Base flight price per passenger
+      const flightPricePerPassenger = selectedFlight.price || 0;
+      
+      // Total flight price = price per passenger × number of passengers
+      const totalFlightPrice = flightPricePerPassenger * payingPassengers;
+      
+      // Add-ons price (per passenger, so multiply by number of passengers)
+      const addonPricePerPassenger = selectedAddons.reduce((sum, addonId) => {
         const addon = ADDONS.find(a => a.id === addonId);
         return sum + (addon ? addon.price : 0);
       }, 0);
+      const totalAddonsPrice = addonPricePerPassenger * payingPassengers;
       
+      // Seats price (already per seat, so no multiplication needed)
       const seatsPrice = selectedSeats.reduce((sum, seat) => {
         return sum + getSeatPrice(seat);
       }, 0);
       
-      const totalPrice = (selectedFlight.price || 0) + addonsPrice + seatsPrice;
+      const totalPrice = totalFlightPrice + totalAddonsPrice + seatsPrice;
       
       const bookingRecord = {
         pnr,
