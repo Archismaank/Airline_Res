@@ -49,7 +49,7 @@ After adding environment variables:
 2. **Connect your GitHub repository**
 3. **Build Settings:**
    - **Root Directory:** `my-airline-app`
-   - **Build Command:** `npm install && npm run build`
+   - **Build Command:** `npm install && NODE_OPTIONS=--max-old-space-size=4096 npm run build`
    - **Start Command:** `npm run serve`
    - **Environment:** `Node`
    - **Node Version:** `18.x` or `20.x` (recommended)

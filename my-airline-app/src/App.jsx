@@ -370,6 +370,7 @@ const App = () => {
       
       return () => clearInterval(interval);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, bookings.length, fetchUserBookings]);
 
   const totalPassengers = useMemo(

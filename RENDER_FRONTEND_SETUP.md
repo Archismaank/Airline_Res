@@ -20,7 +20,7 @@ For Render, you **MUST** use a production build, not the development server.
    ```
    Root Directory: my-airline-app
    
-   Build Command: npm install && npm run build
+   Build Command: npm install && NODE_OPTIONS=--max-old-space-size=4096 npm run build
    
    Start Command: npm run serve
    
