@@ -986,7 +986,12 @@ const App = () => {
       if (response.error) {
         showModal('danger', 'Registration Failed', response.error);
       } else {
-        showModal('success', 'Account Created', 'Registration successful! Please log in.');
+        // If a flight was selected, prompt user to login to continue booking
+        if (selectedFlight && selectedFlight.flightNumber) {
+          showModal('success', 'Account Created', 'Registration successful! Please log in to continue booking.');
+        } else {
+          showModal('success', 'Account Created', 'Registration successful! Please log in.');
+        }
         setRegisterForm({ fullName: '', email: '', mobile: '', password: '' });
         setAuthMode('login');
       }
