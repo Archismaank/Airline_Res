@@ -10,9 +10,10 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:3000', // local frontend
-    'https://airline-reservation-frontend.onrender.com' // deployed Render frontend
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    'https://airline-reservation-frontend.onrender.com', // deployed Render frontend
+    process.env.FRONTEND_URL // Allow frontend URL from environment variable
+  ].filter(Boolean), // Remove undefined values
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true
 }));
 
@@ -52,9 +53,21 @@ app.listen(PORT, async () => {
     await sequelize.authenticate();
     console.log('✅ Connected to SQLite database.');
 
-    // Sync database schema safely (does not delete existing data)
-    await sequelize.sync({ alter: process.env.NODE_ENV !== 'production' });
-    console.log('✅ Database schema synchronized.');
+    // Sync database schema safely (only creates tables if they don't exist)
+    // Using { force: false } instead of { alter: true } to avoid SQLite constraint issues
+    try {
+      await sequelize.sync({ force: false });
+      console.log('✅ Database schema synchronized.');
+    } catch (syncError) {
+      // If sync fails due to schema changes, log but continue
+      // SQLite doesn't handle ALTER TABLE well, so we'll skip schema updates
+      if (syncError.name === 'SequelizeUniqueConstraintError' || syncError.name === 'SequelizeDatabaseError') {
+        console.log('⚠️ Database schema sync skipped (existing tables detected).');
+        console.log('   If you need to update the schema, consider using migrations.');
+      } else {
+        throw syncError; // Re-throw if it's a different error
+      }
+    }
 
     // Start background scheduler (runs once backend is ready)
     startCancellationScheduler();
@@ -62,5 +75,6 @@ app.listen(PORT, async () => {
     console.log(`🚀 Server running on port ${PORT}`);
   } catch (error) {
     console.error('❌ Database connection failed:', error);
+    process.exit(1); // Exit on critical errors
   }
 });

@@ -39,11 +39,12 @@ router.get('/', async (req, res) => {
       let flights = null;
       let useRealTime = false;
       
-      if (AVIATION_STACK_API_KEY) {
+      if (AVIATION_STACK_API_KEY && AVIATION_STACK_API_KEY.trim() !== '') {
+        console.log('🔍 Attempting to fetch real-time flights from AviationStack API...');
         try {
-          // Set a timeout for the API call (3 seconds)
+          // Set a timeout for the API call (6 seconds - increased for better reliability)
           const apiPromise = getRealTimeFlights(fromCode, toCode, date);
-          const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve(null), 3000));
+          const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve(null), 6000));
           
           flights = await Promise.race([apiPromise, timeoutPromise]);
           
@@ -61,11 +62,14 @@ router.get('/', async (req, res) => {
             }
             return res.json(flights);
           } else {
-            console.log('⚠️ No real-time flights found, using generated flights');
+            console.log('⚠️ No real-time flights found from API, using generated flights');
           }
         } catch (error) {
-          console.log('⚠️ Real-time API error, using generated flights:', error.message);
+          console.error('⚠️ Real-time API error, using generated flights:', error.message);
+          console.error('   Full error:', error);
         }
+      } else {
+        console.log('⚠️ No AviationStack API key configured, using generated flights');
       }
       
       // Fallback to generated flights (always ensure flights are generated)

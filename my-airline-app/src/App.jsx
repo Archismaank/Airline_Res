@@ -411,6 +411,26 @@ const App = () => {
   const fromTimeoutRef = useRef(null);
   const toTimeoutRef = useRef(null);
   
+  const fetchUserBookings = async () => {
+    if (!user || !user.id) return;
+    try {
+      const userBookings = await getUserBookings(user.id);
+      setBookings(userBookings);
+    } catch (error) {
+      console.error('Error fetching user bookings:', error);
+    }
+  };
+  
+  const fetchUserTickets = async () => {
+    if (!user || !user.id) return;
+    try {
+      const userTickets = await getUserTickets(user.id);
+      setTickets(userTickets);
+    } catch (error) {
+      console.error('Error fetching user tickets:', error);
+    }
+  };
+
   // Fetch user data on login
   React.useEffect(() => {
     if (user && user.id) {
@@ -433,26 +453,6 @@ const App = () => {
       return () => clearInterval(interval);
     }
   }, [user, bookings.length]);
-  
-  const fetchUserBookings = async () => {
-    if (!user || !user.id) return;
-    try {
-      const userBookings = await getUserBookings(user.id);
-      setBookings(userBookings);
-    } catch (error) {
-      console.error('Error fetching user bookings:', error);
-    }
-  };
-  
-  const fetchUserTickets = async () => {
-    if (!user || !user.id) return;
-    try {
-      const userTickets = await getUserTickets(user.id);
-      setTickets(userTickets);
-    } catch (error) {
-      console.error('Error fetching user tickets:', error);
-    }
-  };
 
   const totalPassengers = useMemo(
     () => searchForm.adults + searchForm.children + searchForm.infants,

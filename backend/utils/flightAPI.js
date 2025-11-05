@@ -2,6 +2,7 @@
 // For production, you would need to sign up at https://aviationstack.com/
 // and get an API key. For now, we'll use enhanced simulation.
 
+require('dotenv').config();
 const https = require('https');
 
 // AviationStack API configuration (requires API key)
@@ -10,25 +11,38 @@ const AVIATION_STACK_BASE_URL = 'https://api.aviationstack.com/v1';
 
 // Real-time flight data from AviationStack (if API key is available)
 async function getRealTimeFlights(fromCode, toCode, date) {
-  if (!AVIATION_STACK_API_KEY) {
-    console.log('No AviationStack API key found, using fallback');
+  if (!AVIATION_STACK_API_KEY || AVIATION_STACK_API_KEY.trim() === '') {
+    console.log('⚠️ No AviationStack API key found in environment variables. Please check your .env file.');
+    console.log('   Create a .env file in the backend directory with: AVIATION_STACK_API_KEY=your_key_here');
     return null;
   }
+  
+  console.log('✅ AviationStack API key found, attempting to fetch real-time flights...');
 
   try {
     // Format date for API (YYYY-MM-DD)
     const formattedDate = date.split('T')[0] || date.split(' ')[0] || date;
     
-    const url = `${AVIATION_STACK_BASE_URL}/flights?access_key=${AVIATION_STACK_API_KEY}&dep_iata=${fromCode}&arr_iata=${toCode}&flight_date=${formattedDate}`;
+    // Use URLSearchParams for proper query string encoding
+    const params = new URLSearchParams({
+      access_key: AVIATION_STACK_API_KEY,
+      dep_iata: fromCode,
+      arr_iata: toCode,
+      flight_date: formattedDate,
+      limit: 10,
+    });
+    
+    const url = `${AVIATION_STACK_BASE_URL}/flights?${params.toString()}`;
     
     console.log('Fetching real-time flights from AviationStack:', url.replace(AVIATION_STACK_API_KEY, '***'));
+    console.log('API Key present:', !!AVIATION_STACK_API_KEY);
     
     return new Promise((resolve, reject) => {
       // Add timeout to prevent hanging
       const timeout = setTimeout(() => {
-        console.log('AviationStack API timeout, using fallback');
+        console.log('⚠️ AviationStack API timeout (8 seconds), using fallback generated flights');
         resolve(null);
-      }, 5000); // 5 second timeout
+      }, 8000); // 8 second timeout (increased for better reliability)
       
       const request = https.get(url, (res) => {
         let data = '';
@@ -37,8 +51,19 @@ async function getRealTimeFlights(fromCode, toCode, date) {
         if (res.statusCode !== 200) {
           console.error(`AviationStack API returned status ${res.statusCode}`);
           clearTimeout(timeout);
-          res.on('data', () => {}); // Drain response
-          res.on('end', () => resolve(null));
+          let errorData = '';
+          res.on('data', (chunk) => {
+            errorData += chunk;
+          });
+          res.on('end', () => {
+            try {
+              const parsed = JSON.parse(errorData);
+              console.error('API Error Response:', parsed);
+            } catch (e) {
+              console.error('Raw error response:', errorData.substring(0, 200));
+            }
+            resolve(null);
+          });
           return;
         }
         
@@ -54,6 +79,9 @@ async function getRealTimeFlights(fromCode, toCode, date) {
             // Check for API errors
             if (result.error) {
               console.error('AviationStack API error:', result.error);
+              if (result.error.info) {
+                console.error('Error details:', result.error.info);
+              }
               resolve(null);
               return;
             }
