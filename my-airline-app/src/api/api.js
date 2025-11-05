@@ -1,6 +1,14 @@
 // Use environment variable for API URL, fallback to localhost for development
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
+// Log API URL on load (helpful for debugging)
+if (typeof window !== 'undefined') {
+  console.log('🔗 API Base URL:', API_BASE_URL);
+  if (API_BASE_URL.includes('localhost')) {
+    console.warn('⚠️ API is using localhost. For production, set REACT_APP_API_URL environment variable.');
+  }
+}
+
 // 👤 Register new user
 export async function registerUser(userData) {
   const res = await fetch(`${API_BASE_URL}/users/register`, {
