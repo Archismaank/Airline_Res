@@ -11,6 +11,7 @@ app.use(cors({
   origin: [
     'http://localhost:3000', // local frontend
     'https://airline-reservation-frontend.onrender.com', // deployed Render frontend
+    'https://airline-reservation-system-tmm6.onrender.com', // user's deployed frontend
     process.env.FRONTEND_URL // Allow frontend URL from environment variable
   ].filter(Boolean), // Remove undefined values
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],

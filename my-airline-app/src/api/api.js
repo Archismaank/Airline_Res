@@ -1,11 +1,25 @@
 // Use environment variable for API URL, fallback to localhost for development
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// Ensure /api is always included
+let API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
+// If API URL doesn't end with /api, add it
+if (!API_BASE_URL.endsWith('/api')) {
+  // Remove trailing slash if present
+  API_BASE_URL = API_BASE_URL.replace(/\/$/, '');
+  // Add /api if not present
+  if (!API_BASE_URL.endsWith('/api')) {
+    API_BASE_URL = API_BASE_URL + '/api';
+  }
+}
 
 // Log API URL on load (helpful for debugging)
 if (typeof window !== 'undefined') {
   console.log('🔗 API Base URL:', API_BASE_URL);
   if (API_BASE_URL.includes('localhost')) {
     console.warn('⚠️ API is using localhost. For production, set REACT_APP_API_URL environment variable.');
+  }
+  if (!API_BASE_URL.endsWith('/api')) {
+    console.error('❌ API Base URL should end with /api. Current:', API_BASE_URL);
   }
 }
 
