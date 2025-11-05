@@ -1,6 +1,6 @@
-import { registerUser, loginUser, searchFlights, createBooking, getBookings, searchAirports, getUserBookings, cancelBooking, getUserTickets, createTicket, checkCancellationStatus } from './api/api';
+import { registerUser, loginUser, searchFlights, createBooking, searchAirports, getUserBookings, cancelBooking, getUserTickets, createTicket, checkCancellationStatus } from './api/api';
 import { searchAirportsLocal } from './data/airports';
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useMemo, useState, useRef, useCallback } from 'react';
 import {
   Plane,
   User,
@@ -23,88 +23,6 @@ import {
 } from 'lucide-react';
 
 const HERO_IMAGE = "https://images.unsplash.com/photo-1502920917128-1aa500764b43?auto=format&fit=crop&w=1600&q=80";
-
-
-const MOCK_FLIGHTS = [
-  {
-    id: 'DL104',
-    airline: 'Delta Airways',
-    flightNumber: 'DL 104',
-    logoBg: 'bg-blue-600',
-    from: 'New York (JFK)',
-    to: 'Los Angeles (LAX)',
-    departTime: '08:15',
-    arriveTime: '11:05',
-    duration: '5h 50m',
-    price: 329,
-    travelType: 'domestic',
-  },
-  {
-    id: 'UA842',
-    airline: 'United Skies',
-    flightNumber: 'UA 842',
-    logoBg: 'bg-slate-700',
-    from: 'Chicago (ORD)',
-    to: 'San Francisco (SFO)',
-    departTime: '10:30',
-    arriveTime: '13:00',
-    duration: '4h 30m',
-    price: 299,
-    travelType: 'domestic',
-  },
-  {
-    id: 'BA202',
-    airline: 'British Atlantic',
-    flightNumber: 'BA 202',
-    logoBg: 'bg-sky-700',
-    from: 'New York (JFK)',
-    to: 'London (LHR)',
-    departTime: '18:45',
-    arriveTime: '06:30',
-    duration: '6h 45m',
-    price: 689,
-    travelType: 'international',
-  },
-  {
-    id: 'SQ031',
-    airline: 'Singapore World',
-    flightNumber: 'SQ 031',
-    logoBg: 'bg-emerald-600',
-    from: 'San Francisco (SFO)',
-    to: 'Singapore (SIN)',
-    departTime: '22:10',
-    arriveTime: '06:50 +2',
-    duration: '16h 40m',
-    price: 1199,
-    travelType: 'international',
-  },
-  {
-    id: 'AI112',
-    airline: 'Air Indigo',
-    flightNumber: 'AI 112',
-    logoBg: 'bg-indigo-600',
-    from: 'Delhi (DEL)',
-    to: 'Mumbai (BOM)',
-    departTime: '09:05',
-    arriveTime: '11:10',
-    duration: '2h 05m',
-    price: 149,
-    travelType: 'domestic',
-  },
-  {
-    id: 'EK215',
-    airline: 'Emirates Global',
-    flightNumber: 'EK 215',
-    logoBg: 'bg-red-600',
-    from: 'Dubai (DXB)',
-    to: 'Los Angeles (LAX)',
-    departTime: '08:30',
-    arriveTime: '13:15',
-    duration: '15h 45m',
-    price: 1349,
-    travelType: 'international',
-  },
-];
 
 const ADDONS = [
   { id: 'meal', label: 'In-Flight Meal', description: 'Enjoy a gourmet meal tailored to your preferences.', price: 25 },
@@ -225,7 +143,7 @@ const Header = ({ currentPage, onNavigate, onAuthToggle, user, handleLogout }) =
           { label: 'Customer Support', page: 'support' },
           ...(user ? [{ label: 'Profile', page: 'profile' }] : []),
         ].map((item) => (
-          <a
+          <button
             key={item.page}
             onClick={() => onNavigate(item.page)}
             className={`cursor-pointer rounded-full px-4 py-2 transition ${
@@ -233,21 +151,21 @@ const Header = ({ currentPage, onNavigate, onAuthToggle, user, handleLogout }) =
             }`}
           >
             {item.label}
-          </a>
+          </button>
         ))}
 
         {user ? (
           <div className="flex items-center gap-3">
-            <a
+            <button
               onClick={handleLogout}
               className="flex cursor-pointer items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-slate-700 hover:bg-slate-200"
             >
               <LogIn className="h-4 w-4" />
               Logout
-            </a>
+            </button>
           </div>
         ) : (
-          <a
+          <button
             onClick={onAuthToggle}
             className={`flex cursor-pointer items-center gap-2 rounded-full px-4 py-2 transition ${
               currentPage === 'auth'
@@ -257,7 +175,7 @@ const Header = ({ currentPage, onNavigate, onAuthToggle, user, handleLogout }) =
           >
             <LogIn className="h-4 w-4" />
             Login / Register
-          </a>
+          </button>
         )}
 
       </nav>
@@ -411,7 +329,7 @@ const App = () => {
   const fromTimeoutRef = useRef(null);
   const toTimeoutRef = useRef(null);
   
-  const fetchUserBookings = async () => {
+  const fetchUserBookings = useCallback(async () => {
     if (!user || !user.id) return;
     try {
       const userBookings = await getUserBookings(user.id);
@@ -419,9 +337,9 @@ const App = () => {
     } catch (error) {
       console.error('Error fetching user bookings:', error);
     }
-  };
+  }, [user]);
   
-  const fetchUserTickets = async () => {
+  const fetchUserTickets = useCallback(async () => {
     if (!user || !user.id) return;
     try {
       const userTickets = await getUserTickets(user.id);
@@ -429,7 +347,7 @@ const App = () => {
     } catch (error) {
       console.error('Error fetching user tickets:', error);
     }
-  };
+  }, [user]);
 
   // Fetch user data on login
   React.useEffect(() => {
@@ -437,7 +355,7 @@ const App = () => {
       fetchUserBookings();
       fetchUserTickets();
     }
-  }, [user]);
+  }, [user, fetchUserBookings, fetchUserTickets]);
   
   // Auto-refresh bookings to check for cancellation status updates (every minute)
   React.useEffect(() => {
@@ -452,7 +370,7 @@ const App = () => {
       
       return () => clearInterval(interval);
     }
-  }, [user, bookings.length]);
+  }, [user, bookings.length, fetchUserBookings]);
 
   const totalPassengers = useMemo(
     () => searchForm.adults + searchForm.children + searchForm.infants,
@@ -2577,9 +2495,9 @@ const App = () => {
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-6 text-xs text-slate-500">
           <p>© {new Date().getFullYear()} MyAirline. All rights reserved.</p>
           <div className="flex gap-3">
-            <a className="cursor-pointer hover:text-blue-600">Privacy Policy</a>
-            <a className="cursor-pointer hover:text-blue-600">Terms</a>
-            <a className="cursor-pointer hover:text-blue-600">Accessibility</a>
+            <button type="button" className="cursor-pointer hover:text-blue-600">Privacy Policy</button>
+            <button type="button" className="cursor-pointer hover:text-blue-600">Terms</button>
+            <button type="button" className="cursor-pointer hover:text-blue-600">Accessibility</button>
           </div>
         </div>
       </footer>
