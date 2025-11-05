@@ -25,10 +25,10 @@ import {
 const HERO_IMAGE = "https://images.unsplash.com/photo-1502920917128-1aa500764b43?auto=format&fit=crop&w=1600&q=80";
 
 const ADDONS = [
-  { id: 'meal', label: 'In-Flight Meal', description: 'Enjoy a gourmet meal tailored to your preferences.', price: 25 },
-  { id: 'baggage', label: 'Extra Baggage', description: 'Add 15kg of additional checked-in baggage.', price: 40 },
-  { id: 'insurance', label: 'Travel Insurance', description: 'Comprehensive coverage for your entire journey.', price: 32 },
-  { id: 'hotel', label: 'Hotel & Itinerary Package', description: 'Curated stays and excursions at your destination.', price: 199 },
+  { id: 'meal', label: 'In-Flight Meal', description: 'Enjoy a gourmet meal tailored to your preferences.', price: 450 },
+  { id: 'baggage', label: 'Extra Baggage', description: 'Add 15kg of additional checked-in baggage.', price: 750 },
+  { id: 'insurance', label: 'Travel Insurance', description: 'Comprehensive coverage for your entire journey.', price: 550 },
+  { id: 'hotel', label: 'Hotel & Itinerary Package', description: 'Curated stays and excursions at your destination.', price: 950 },
 ];
 
 const SEAT_COLS = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -676,24 +676,33 @@ const App = () => {
   };
 
   // Calculate total price including flight, add-ons, and seats
+  // Price is multiplied by number of paying passengers (adults + children, not infants)
   const calculateTotalPrice = useMemo(() => {
     if (!selectedFlight) return 0;
     
-    const flightPrice = selectedFlight.price || 0;
+    // Get number of paying passengers (adults + children, infants are free)
+    const payingPassengers = searchForm.adults + searchForm.children;
     
-    // Add add-ons price
-    const addonsPrice = selectedAddons.reduce((sum, addonId) => {
+    // Base flight price per passenger
+    const flightPricePerPassenger = selectedFlight.price || 0;
+    
+    // Total flight price = price per passenger × number of passengers
+    const totalFlightPrice = flightPricePerPassenger * payingPassengers;
+    
+    // Add-ons price (per passenger, so multiply by number of passengers)
+    const addonPricePerPassenger = selectedAddons.reduce((sum, addonId) => {
       const addon = ADDONS.find(a => a.id === addonId);
       return sum + (addon ? addon.price : 0);
     }, 0);
+    const totalAddonsPrice = addonPricePerPassenger * payingPassengers;
     
-    // Add seats price
+    // Seats price (already per seat, so no multiplication needed)
     const seatsPrice = selectedSeats.reduce((sum, seat) => {
       return sum + getSeatPrice(seat);
     }, 0);
     
-    return flightPrice + addonsPrice + seatsPrice;
-  }, [selectedFlight, selectedAddons, selectedSeats]);
+    return totalFlightPrice + totalAddonsPrice + seatsPrice;
+  }, [selectedFlight, selectedAddons, selectedSeats, searchForm.adults, searchForm.children]);
 
   const proceedToNextStep = async () => {
     if (bookingStep === 1) {
