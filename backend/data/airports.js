@@ -1,0 +1,141 @@
+// Comprehensive Airport data for India and international airports
+const airports = {
+  domestic: [
+    // Major Metropolitan Airports
+    { code: 'DEL', city: 'Delhi', name: 'Indira Gandhi International Airport', country: 'India' },
+    { code: 'BOM', city: 'Mumbai', name: 'Chhatrapati Shivaji Maharaj International Airport', country: 'India' },
+    { code: 'BLR', city: 'Bangalore', name: 'Kempegowda International Airport', country: 'India' },
+    { code: 'CCU', city: 'Kolkata', name: 'Netaji Subhas Chandra Bose International Airport', country: 'India' },
+    { code: 'MAA', city: 'Chennai', name: 'Chennai International Airport', country: 'India' },
+    { code: 'HYD', city: 'Hyderabad', name: 'Rajiv Gandhi International Airport', country: 'India' },
+    
+    // Tier-2 Cities
+    { code: 'PNQ', city: 'Pune', name: 'Pune Airport', country: 'India' },
+    { code: 'GOI', city: 'Goa', name: 'Goa International Airport (Dabolim)', country: 'India' },
+    { code: 'JAI', city: 'Jaipur', name: 'Jaipur International Airport', country: 'India' },
+    { code: 'AMD', city: 'Ahmedabad', name: 'Sardar Vallabhbhai Patel International Airport', country: 'India' },
+    { code: 'COK', city: 'Kochi', name: 'Cochin International Airport', country: 'India' },
+    { code: 'IXC', city: 'Chandigarh', name: 'Chandigarh Airport', country: 'India' },
+    { code: 'LKO', city: 'Lucknow', name: 'Chaudhary Charan Singh International Airport', country: 'India' },
+    { code: 'VNS', city: 'Varanasi', name: 'Lal Bahadur Shastri International Airport', country: 'India' },
+    { code: 'GAU', city: 'Guwahati', name: 'Lokpriya Gopinath Bordoloi International Airport', country: 'India' },
+    { code: 'PAT', city: 'Patna', name: 'Jay Prakash Narayan Airport', country: 'India' },
+    { code: 'IXB', city: 'Bagdogra', name: 'Bagdogra Airport', country: 'India' },
+    { code: 'TRV', city: 'Thiruvananthapuram', name: 'Trivandrum International Airport', country: 'India' },
+    { code: 'IXE', city: 'Mangalore', name: 'Mangalore International Airport', country: 'India' },
+    { code: 'IXM', city: 'Madurai', name: 'Madurai Airport', country: 'India' },
+    { code: 'IXZ', city: 'Port Blair', name: 'Veer Savarkar International Airport', country: 'India' },
+    { code: 'IXU', city: 'Aurangabad', name: 'Aurangabad Airport', country: 'India' },
+    { code: 'IXJ', city: 'Jammu', name: 'Jammu Airport', country: 'India' },
+    { code: 'SXR', city: 'Srinagar', name: 'Srinagar Airport', country: 'India' },
+    { code: 'ATQ', city: 'Amritsar', name: 'Sri Guru Ram Dass Jee International Airport', country: 'India' },
+    { code: 'IXR', city: 'Ranchi', name: 'Birsa Munda Airport', country: 'India' },
+    { code: 'RPR', city: 'Raipur', name: 'Swami Vivekananda Airport', country: 'India' },
+    { code: 'BBI', city: 'Bhubaneswar', name: 'Biju Patnaik International Airport', country: 'India' },
+    { code: 'VTZ', city: 'Visakhapatnam', name: 'Visakhapatnam Airport', country: 'India' },
+    { code: 'IDR', city: 'Indore', name: 'Devi Ahilya Bai Holkar Airport', country: 'India' },
+    { code: 'BDQ', city: 'Vadodara', name: 'Vadodara Airport', country: 'India' },
+    { code: 'STV', city: 'Surat', name: 'Surat Airport', country: 'India' },
+    { code: 'NAG', city: 'Nagpur', name: 'Dr. Babasaheb Ambedkar International Airport', country: 'India' },
+    { code: 'IXA', city: 'Agartala', name: 'Agartala Airport', country: 'India' },
+    { code: 'IXD', city: 'Allahabad', name: 'Allahabad Airport', country: 'India' },
+    { code: 'IXG', city: 'Belgaum', name: 'Belgaum Airport', country: 'India' },
+    { code: 'BHO', city: 'Bhopal', name: 'Raja Bhoj Airport', country: 'India' },
+    { code: 'IXY', city: 'Kandla', name: 'Kandla Airport', country: 'India' },
+    { code: 'CJB', city: 'Coimbatore', name: 'Coimbatore International Airport', country: 'India' },
+    { code: 'TIR', city: 'Tirupati', name: 'Tirupati Airport', country: 'India' },
+    { code: 'JLR', city: 'Jabalpur', name: 'Jabalpur Airport', country: 'India' },
+    { code: 'JDH', city: 'Jodhpur', name: 'Jodhpur Airport', country: 'India' },
+    { code: 'UDR', city: 'Udaipur', name: 'Maharana Pratap Airport', country: 'India' },
+    { code: 'DED', city: 'Dehradun', name: 'Jolly Grant Airport', country: 'India' },
+    { code: 'GAY', city: 'Gaya', name: 'Gaya Airport', country: 'India' },
+    { code: 'IXW', city: 'Jamshedpur', name: 'Sonari Airport', country: 'India' },
+    { code: 'IXH', city: 'Kailashahar', name: 'Kailashahar Airport', country: 'India' },
+    { code: 'KNU', city: 'Kanpur', name: 'Kanpur Airport', country: 'India' },
+    { code: 'IXK', city: 'Keshod', name: 'Keshod Airport', country: 'India' },
+    { code: 'IXL', city: 'Leh', name: 'Kushok Bakula Rimpochee Airport', country: 'India' },
+    { code: 'IXP', city: 'Pathankot', name: 'Pathankot Airport', country: 'India' },
+    { code: 'IXQ', city: 'Kamalpur', name: 'Kamalpur Airport', country: 'India' },
+    { code: 'IXS', city: 'Silchar', name: 'Silchar Airport', country: 'India' },
+    { code: 'IXT', city: 'Pasighat', name: 'Pasighat Airport', country: 'India' },
+    { code: 'IXV', city: 'Along', name: 'Along Airport', country: 'India' },
+    { code: 'IXY', city: 'Kandla', name: 'Kandla Airport', country: 'India' },
+    { code: 'JGB', city: 'Jagdalpur', name: 'Jagdalpur Airport', country: 'India' },
+    { code: 'JSA', city: 'Jaisalmer', name: 'Jaisalmer Airport', country: 'India' },
+    { code: 'JRH', city: 'Jorhat', name: 'Jorhat Airport', country: 'India' },
+    { code: 'KLH', city: 'Kolhapur', name: 'Kolhapur Airport', country: 'India' },
+    { code: 'KUU', city: 'Kullu', name: 'Kullu Manali Airport', country: 'India' },
+    { code: 'LDA', city: 'Malda', name: 'Malda Airport', country: 'India' },
+    { code: 'LKO', city: 'Lucknow', name: 'Chaudhary Charan Singh International Airport', country: 'India' },
+    { code: 'LUH', city: 'Ludhiana', name: 'Sahnewal Airport', country: 'India' },
+    { code: 'NDC', city: 'Nanded', name: 'Nanded Airport', country: 'India' },
+    { code: 'PBD', city: 'Porbandar', name: 'Porbandar Airport', country: 'India' },
+    { code: 'PGH', city: 'Pantnagar', name: 'Pantnagar Airport', country: 'India' },
+    { code: 'PNS', city: 'Pondicherry', name: 'Pondicherry Airport', country: 'India' },
+    { code: 'PUT', city: 'Puttaparthi', name: 'Puttaparthi Airport', country: 'India' },
+    { code: 'RGH', city: 'Balurghat', name: 'Balurghat Airport', country: 'India' },
+    { code: 'RJA', city: 'Rajahmundry', name: 'Rajahmundry Airport', country: 'India' },
+    { code: 'RTC', city: 'Ratnagiri', name: 'Ratnagiri Airport', country: 'India' },
+    { code: 'RUP', city: 'Rupsi', name: 'Rupsi Airport', country: 'India' },
+    { code: 'SAG', city: 'Shirdi', name: 'Shirdi Airport', country: 'India' },
+    { code: 'SXV', city: 'Salem', name: 'Salem Airport', country: 'India' },
+    { code: 'TCR', city: 'Tuticorin', name: 'Tuticorin Airport', country: 'India' },
+    { code: 'TEZ', city: 'Tezpur', name: 'Tezpur Airport', country: 'India' },
+    { code: 'TJV', city: 'Thanjavur', name: 'Thanjavur Airport', country: 'India' },
+    { code: 'TNI', city: 'Satna', name: 'Satna Airport', country: 'India' },
+    { code: 'VGA', city: 'Vijayawada', name: 'Vijayawada Airport', country: 'India' },
+    { code: 'WGC', city: 'Warangal', name: 'Warangal Airport', country: 'India' },
+  ],
+  international: [
+    { code: 'DXB', city: 'Dubai', name: 'Dubai International Airport', country: 'UAE' },
+    { code: 'SIN', city: 'Singapore', name: 'Singapore Changi Airport', country: 'Singapore' },
+    { code: 'BKK', city: 'Bangkok', name: 'Suvarnabhumi Airport', country: 'Thailand' },
+    { code: 'KUL', city: 'Kuala Lumpur', name: 'Kuala Lumpur International Airport', country: 'Malaysia' },
+    { code: 'LHR', city: 'London', name: 'Heathrow Airport', country: 'UK' },
+    { code: 'JFK', city: 'New York', name: 'John F. Kennedy International Airport', country: 'USA' },
+    { code: 'LAX', city: 'Los Angeles', name: 'Los Angeles International Airport', country: 'USA' },
+    { code: 'CDG', city: 'Paris', name: 'Charles de Gaulle Airport', country: 'France' },
+    { code: 'FRA', city: 'Frankfurt', name: 'Frankfurt Airport', country: 'Germany' },
+    { code: 'SYD', city: 'Sydney', name: 'Sydney Airport', country: 'Australia' },
+    { code: 'NRT', city: 'Tokyo', name: 'Narita International Airport', country: 'Japan' },
+    { code: 'HKG', city: 'Hong Kong', name: 'Hong Kong International Airport', country: 'Hong Kong' },
+    { code: 'DOH', city: 'Doha', name: 'Hamad International Airport', country: 'Qatar' },
+    { code: 'AUH', city: 'Abu Dhabi', name: 'Abu Dhabi International Airport', country: 'UAE' },
+    { code: 'KWI', city: 'Kuwait', name: 'Kuwait International Airport', country: 'Kuwait' },
+    { code: 'BAH', city: 'Bahrain', name: 'Bahrain International Airport', country: 'Bahrain' },
+    { code: 'MCT', city: 'Muscat', name: 'Muscat International Airport', country: 'Oman' },
+    { code: 'CMB', city: 'Colombo', name: 'Bandaranaike International Airport', country: 'Sri Lanka' },
+    { code: 'KTM', city: 'Kathmandu', name: 'Tribhuvan International Airport', country: 'Nepal' },
+    { code: 'DAC', city: 'Dhaka', name: 'Hazrat Shahjalal International Airport', country: 'Bangladesh' },
+  ],
+};
+
+// Get all airports for autocomplete
+function getAllAirports() {
+  return [...airports.domestic, ...airports.international];
+}
+
+// Search airports by query
+function searchAirports(query) {
+  const allAirports = getAllAirports();
+  const lowerQuery = query.toLowerCase();
+  return allAirports.filter(
+    (airport) =>
+      airport.city.toLowerCase().includes(lowerQuery) ||
+      airport.code.toLowerCase().includes(lowerQuery) ||
+      airport.name.toLowerCase().includes(lowerQuery)
+  );
+}
+
+// Get airport by code
+function getAirportByCode(code) {
+  const allAirports = getAllAirports();
+  return allAirports.find((airport) => airport.code === code);
+}
+
+module.exports = {
+  airports,
+  getAllAirports,
+  searchAirports,
+  getAirportByCode,
+};
